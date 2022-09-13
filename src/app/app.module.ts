@@ -28,6 +28,8 @@ import { ContactComponent } from './contact/contact.component';
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { LoginComponent } from './login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { baseURL } from './shared/baseurl';
 
 @NgModule({
   declarations: [
@@ -49,6 +51,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
+    HttpClientModule,
     MatToolbarModule,
     MatListModule,
     MatGridListModule,
@@ -66,7 +69,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   entryComponents: [
     LoginComponent,
   ],
-  providers: [],
+  providers: [
+    {provide: 'BaseURL', useValue: baseURL}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

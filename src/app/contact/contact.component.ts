@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { flyInOut } from '../animations/app.animation';
+import { FeedbackService } from '../services/feedback.service';
 import { ContactType, Feedback } from '../shared/feedback';
 
 @Component({
@@ -17,6 +18,7 @@ export class ContactComponent implements OnInit {
 
   feedbackForm!: FormGroup;
   feedback!: Feedback;
+  errMess: string | any;
   contactType = ContactType;
   @ViewChild('fform') feedbackFormDirective: any;
   formErrors: | any = {
@@ -47,7 +49,7 @@ export class ContactComponent implements OnInit {
     }
   };
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private feedbackService: FeedbackService) {
     this.createForm();
   }
 
@@ -58,7 +60,7 @@ export class ContactComponent implements OnInit {
     this.feedbackForm = this.fb.group({
       firstname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
       lastname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
-      telnum: [0, [Validators.required, Validators.pattern]],
+      telnum: [ , [Validators.required, Validators.pattern]],
       email: ['', [Validators.required, Validators.email]],
       agree: false,
       contacttype: 'None',
@@ -93,7 +95,14 @@ export class ContactComponent implements OnInit {
 
   onSubmit() {
     this.feedback = this.feedbackForm.value;
-    console.log(this.feedback);
+    this.feedbackService.submitFeedback(this.feedback)
+      .subscribe(data=>{
+        this.feedback = data;
+        this.setTime();
+        console.log(this.feedback);
+      },errmess => {
+        this.errMess = <any>errmess;
+      });
     this.feedbackFormDirective.resetForm();
     this.feedbackForm.reset({
       firstname: '',
@@ -104,6 +113,10 @@ export class ContactComponent implements OnInit {
       contacttype: 'None',
       message: ''
     });
+  }
+
+  setTime() {
+    setTimeout(this.onSubmit, 5000);
   }
 
 }
